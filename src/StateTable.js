@@ -12,28 +12,28 @@ import './css/styles.css';
 
 const StateTable = React.memo(() => {
   const initialStates = useMemo(() => [
-    { id: '1', img1, img2, img3, img4, img5, img6 },
-    { id: '2', img1: img4, img2: img5, img3: img6, img4: img1, img5: img2, img6: img3 },
-    { id: '3', img1, img2, img3, img4, img5, img6 },
-    { id: '4', img1: img4, img2: img5, img3: img6, img4: img1, img5: img2, img6: img3 },
-    { id: '5', img1, img2, img3, img4, img5, img6 },
+    { id: '1', primaryVariant: img1, variant2: img2, variant3: img3, variant4: null },
+    { id: '2', primaryVariant: img4, variant2: img5, variant3: img6, variant4: null },
+    { id: '3', primaryVariant: img1, variant2: img2, variant3: img3, variant4: null },
+    { id: '4', primaryVariant: img4, variant2: img5, variant3: img6, variant4: null },
+    { id: '5', primaryVariant: img1, variant2: img2, variant3: img3, variant4: null },
   ], []);
 
   const [states, setStates] = useState(initialStates);
-  const [additionalColumns, setAdditionalColumns] = useState(["Variant 4"]);
+  const [additionalColumns, setAdditionalColumns] = useState([]);
   const [alertMessage, setAlertMessage] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [activeCell, setActiveCell] = useState({ rowId: null, columnIndex: null });
 
   const addState = useCallback(() => {
-    setStates(prevStates => [...prevStates, { id: String(prevStates.length + 1) }]);
+    setStates(prevStates => [...prevStates, { id: String(prevStates.length + 1), primaryVariant: null, variant2: null, variant3: null, variant4: null }]);
     setAlertMessage('✅ State added');
     setTimeout(() => setAlertMessage(''), 2000);
   }, [setStates, setAlertMessage]);
 
   const addColumn = useCallback(() => {
-    const newColumn = `Variant ${additionalColumns.length + 4}`;
+    const newColumn = `variant${additionalColumns.length + 4}`;
     setAdditionalColumns(prevColumns => [...prevColumns, newColumn]);
     setAlertMessage('✅ Variant added');
     setTimeout(() => setAlertMessage(''), 2000);
@@ -49,9 +49,14 @@ const StateTable = React.memo(() => {
   const deleteColumn = useCallback((index) => {
     const updatedColumns = additionalColumns.filter((_, colIndex) => colIndex !== index);
     setAdditionalColumns(updatedColumns);
+    const updatedStates = states.map(state => {
+      const { [`variant${index + 4}`]: removed, ...rest } = state;
+      return rest;
+    });
+    setStates(updatedStates);
     setAlertMessage('✅ Variant removed');
     setTimeout(() => setAlertMessage(''), 2000);
-  }, [additionalColumns, setAdditionalColumns, setAlertMessage]);
+  }, [additionalColumns, states, setAdditionalColumns, setStates, setAlertMessage]);
 
   const onDragEnd = useCallback((result) => {
     if (!result.destination) {
@@ -65,7 +70,7 @@ const StateTable = React.memo(() => {
   }, [states, setStates]);
 
   const openModal = useCallback((rowId, columnIndex) => {
-    setActiveCell({ rowId, columnIndex: `Variant ${columnIndex + 4}` });
+    setActiveCell({ rowId, columnIndex });
     setShowModal(true);
   }, []);
 
@@ -127,15 +132,16 @@ const StateTable = React.memo(() => {
                               {index + 1}
                             </div>
                           </td>
-                          {['img1', 'img2', 'img3'].map((img, colIndex) => (
+                          <td>Product Filters</td>
+                          {['primaryVariant', 'variant2', 'variant3'].map((variant, colIndex) => (
                             <td key={colIndex}>
-                              {index < 5 ? (
+                              {state[variant] ? (
                                 <>
-                                  <img src={state[img]} alt={`${img}`} className="custom-img" />
+                                  <img src={state[variant]} alt={`${variant}`} className="custom-img" />
                                   <div className='imgdes'>Single image product</div>
                                 </>
                               ) : (
-                                <Button variant="outline-primary" onClick={() => openModal(state.id, colIndex)}>+ Add Design</Button>
+                                <Button variant="outline-primary" onClick={() => openModal(state.id, variant)}>+ Add Design</Button>
                               )}
                             </td>
                           ))}
@@ -148,7 +154,7 @@ const StateTable = React.memo(() => {
                                     <div className='imgdes'>Single image product</div>
                                   </>
                                 ) : (
-                                  <Button variant="outline-primary" onClick={() => openModal(state.id, colIndex)}>+ Add Design</Button>
+                                  <Button variant="outline-primary" onClick={() => openModal(state.id, column)}>+ Add Design</Button>
                                 )}
                               </div>
                             </td>
@@ -165,7 +171,7 @@ const StateTable = React.memo(() => {
                     <td>
                       <Button variant="link" className="add-state-button" onClick={addState}>+</Button>
                     </td>
-                    {[...Array(5 + additionalColumns.length)].map((_, index) => (
+                    {[...Array(4 + additionalColumns.length)].map((_, index) => (
                       <td key={index}></td>
                     ))}
                   </tr>

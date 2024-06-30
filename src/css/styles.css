@@ -67,32 +67,33 @@
 }
 
 .add-state-button, .add-column-button {
-    font-size: 24px; /* Increase the font size */
-    color: black;    /* Change the color to black */
-    text-decoration: none; /* Remove underline */
-    padding: 0; /* Remove any padding */
-    line-height: 1; /* Adjust line-height to center the icon */
+    font-size: 24px; 
+    color: black;    
+    text-decoration: none; 
+    padding: 0; 
+    line-height: 1;
   }
   
   .add-state-button:hover, .add-column-button:hover {
-    text-decoration: none; /* Ensure no underline on hover */
-    color: black; /* Keep color black on hover */
+    text-decoration: none; 
+    color: black; 
   }
   
   .add-column-cell {
-    text-align: center; /* Center the add column button */
+    text-align: center;
   }
   .table-container {
-    overflow-x: auto; /* Add horizontal scroll */
-    white-space: nowrap; /* Prevent table cells from wrapping */
+    overflow-x: auto; 
+    white-space: nowrap; 
+    font-family:'Times New Roman', Times, serif
   }
   .imgdes{
     font-size: small;
     padding-left: 48px;
   }
   .modal-img {
-    width: 100px; /* Adjust width as per your design */
-    height: 120px; /* Maintain aspect ratio */
-    /* Add any other styling you need */
+    width: 100px;
+    height: 120px;
+  
   }
   
